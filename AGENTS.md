@@ -65,6 +65,6 @@ npm install && npm run dev  # should show the full office in Chrome
 - MIT license — maintain attribution
 - No VS Code APIs in the final build
 - Must work with just `npm run dev` in Chrome
-- **MUST use PNG sprite assets** — load character PNGs, wall tiles, floor tiles, and furniture from `public/assets/`. Do NOT hand-draw sprites with canvas primitives (no fillRect pixel-by-pixel drawing). The original pixel-agents uses pre-made PNG spritesheets — keep that approach.
-- **NO pure CSS/canvas procedural drawing** for sprites or furniture. The visual quality comes from the PNG art. Use `drawImage()` to render sprites, not loops of colored rectangles.
-- The `scripts/` directory has export tools that convert PNGs to sprite data — use these or load PNGs directly in the browser via Canvas `getImageData()`.
+- **MUST use PNG sprite assets** — load character PNGs, wall tiles, floor tiles, and furniture from `public/assets/`. Do NOT hand-draw sprites with canvas primitives (no `fillRect` pixel-by-pixel drawing). The original pixel-agents uses pre-made PNG spritesheets — keep that approach.
+- **NO procedural drawing** — never replace PNG sprites with loops of colored rectangles or hand-coded canvas shapes. The visual quality comes from the PNG art. Use `drawImage()` to render sprites from the spritesheets.
+- The `scripts/` directory has export tools that convert PNGs to sprite arrays — use these or load PNGs directly in the browser via Canvas `getImageData()`.

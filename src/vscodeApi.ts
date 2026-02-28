@@ -1,15 +1,7 @@
-declare function acquireVsCodeApi(): { postMessage(msg: unknown): void }
-
-function getApi(): { postMessage(msg: unknown): void } {
-  if (typeof acquireVsCodeApi === 'function') {
-    try {
-      return acquireVsCodeApi()
-    } catch { /* standalone browser */ }
-  }
-  return { postMessage() {} }
+/** Standalone no-op — no VS Code dependency */
+export const vscode = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  postMessage(_msg: unknown): void {
+    // no-op in standalone mode
+  },
 }
-
-export const vscode = getApi()
-
-/** True when running outside VS Code (standalone browser) */
-export const isStandalone = typeof acquireVsCodeApi !== 'function'

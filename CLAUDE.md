@@ -60,6 +60,13 @@ cd webview-ui && npm install && npm run dev
 npm install && npm run dev  # should show the full office in Chrome
 ```
 
+## PR Policy
+- Read the GitHub issue's **Test Criteria** section before starting work.
+- You MUST verify every test criterion passes before submitting a PR.
+- If a criterion fails, fix it. Do NOT submit the PR until ALL criteria pass.
+- In your PR body, include a checklist showing each criterion with pass/fail status and evidence (e.g., console output, screenshot description, or test command results).
+- If a criterion is genuinely impossible or out of scope, explain why in the PR body — do not silently skip it.
+
 ## Rules
 - Keep the EXACT same visual output — same sprites, same animations, same office
 - MIT license — maintain attribution

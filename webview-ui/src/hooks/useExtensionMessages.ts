@@ -7,8 +7,9 @@ import { buildDynamicCatalog } from '../office/layout/furnitureCatalog.js'
 import { setFloorSprites } from '../office/floorTiles.js'
 import { setWallSprites } from '../office/wallTiles.js'
 import { setCharacterTemplates } from '../office/sprites/spriteData.js'
-import { vscode } from '../vscodeApi.js'
+import { vscode, isStandalone } from '../vscodeApi.js'
 import { playDoneSound, setSoundEnabled } from '../notificationSound.js'
+import { initBrowserAssets } from '../browserInit.js'
 
 export interface SubagentCharacter {
   id: number
@@ -356,7 +357,27 @@ export function useExtensionMessages(
       }
     }
     window.addEventListener('message', handler)
-    vscode.postMessage({ type: 'webviewReady' })
+
+    if (isStandalone) {
+      // Standalone browser: load assets directly instead of waiting for extension messages
+      const os = getOfficeState()
+      initBrowserAssets(os).then((result) => {
+        if (result.loadedAssets) {
+          setLoadedAssets(result.loadedAssets)
+        }
+        if (result.layout) {
+          onLayoutLoaded?.(result.layout)
+        } else {
+          // Use the default layout from OfficeState constructor
+          onLayoutLoaded?.(os.getLayout())
+        }
+        layoutReadyRef.current = true
+        setLayoutReady(true)
+      })
+    } else {
+      vscode.postMessage({ type: 'webviewReady' })
+    }
+
     return () => window.removeEventListener('message', handler)
   }, [getOfficeState])
 

@@ -8,7 +8,6 @@ import { paintTile, placeFurniture, removeFurniture, moveFurniture, rotateFurnit
 import type { ExpandDirection } from '../office/editor/editorActions.js'
 import { getCatalogEntry, getRotatedType, getToggledType } from '../office/layout/furnitureCatalog.js'
 import { defaultZoom } from '../office/toolUtils.js'
-import { vscode } from '../vscodeApi.js'
 import { LAYOUT_SAVE_DEBOUNCE_MS, ZOOM_MIN, ZOOM_MAX } from '../constants.js'
 
 export interface EditorActions {
@@ -58,11 +57,12 @@ export function useEditorActions(
     lastSavedLayoutRef.current = structuredClone(layout)
   }, [])
 
-  // Debounced layout save
-  const saveLayout = useCallback((layout: OfficeLayout) => {
+  // Debounced layout save (no-op in standalone mode, but keeps dirty tracking working)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const saveLayout = useCallback((_layout: OfficeLayout) => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(() => {
-      vscode.postMessage({ type: 'saveLayout', layout })
+      // no-op in standalone mode
     }, LAYOUT_SAVE_DEBOUNCE_MS)
   }, [])
 
@@ -79,7 +79,7 @@ export function useEditorActions(
   }, [getOfficeState, editorState, saveLayout])
 
   const handleOpenClaude = useCallback(() => {
-    vscode.postMessage({ type: 'openClaude' })
+    // no-op in standalone mode
   }, [])
 
   const handleToggleEditMode = useCallback(() => {
@@ -303,7 +303,7 @@ export function useEditorActions(
     const os = getOfficeState()
     const layout = os.getLayout()
     lastSavedLayoutRef.current = structuredClone(layout)
-    vscode.postMessage({ type: 'saveLayout', layout })
+    // no-op save in standalone mode
     editorState.isDirty = false
     setIsDirty(false)
   }, [getOfficeState, editorState])

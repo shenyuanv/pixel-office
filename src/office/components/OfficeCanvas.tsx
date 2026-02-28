@@ -8,7 +8,6 @@ import { TILE_SIZE, EditTool } from '../types.js'
 import { CAMERA_FOLLOW_LERP, CAMERA_FOLLOW_SNAP_THRESHOLD, ZOOM_MIN, ZOOM_MAX, ZOOM_SCROLL_THRESHOLD, PAN_MARGIN_FRACTION } from '../../constants.js'
 import { getCatalogEntry, isRotatable } from '../layout/furnitureCatalog.js'
 import { canPlaceFurniture, getWallPlacementRow } from '../editor/editorActions.js'
-import { vscode } from '../../vscodeApi.js'
 import { unlockAudio } from '../../notificationSound.js'
 
 interface OfficeCanvasProps {
@@ -584,13 +583,7 @@ export function OfficeCanvas({ officeState, onClick, isEditMode, editorState, on
                   officeState.reassignSeat(officeState.selectedAgentId, seatId)
                   officeState.selectedAgentId = null
                   officeState.cameraFollowId = null
-                  // Persist seat assignments (exclude sub-agents)
-                  const seats: Record<number, { palette: number; seatId: string | null }> = {}
-                  for (const ch of officeState.characters.values()) {
-                    if (ch.isSubagent) continue
-                    seats[ch.id] = { palette: ch.palette, seatId: ch.seatId }
-                  }
-                  vscode.postMessage({ type: 'saveAgentSeats', seats })
+                  // Seat reassignment is local-only in standalone mode
                   return
                 }
               }
